@@ -1,4 +1,4 @@
-# Final Project: Sistem Manajemen Buku Perpustakaan API
+# Final Project SC Backend KSM Android: Sistem Manajemen Buku Perpustakaan
 
 Proyek *backend* ini merupakan implementasi API untuk sistem manajemen perpustakaan yang mengelola data anggota, buku, dan transaksi peminjaman. Proyek ini dibangun menggunakan **Node.js** dan *framework* **Express.js**.
 
