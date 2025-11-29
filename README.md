@@ -1,36 +1,19 @@
-# Judul Proyek
-Sistem Manajemen Buku Perpustakaan  
+# Final Project: Sistem Manajemen Buku Perpustakaan API
 
-# Gambaran Umum File
-Proyek ini memiliki beberapa file utama, yaitu `data.js` untuk menyimpan data buku, `function.js` untuk menjalankan fungsi CRUD serta fitur tambahan seperti menghitung dan memfilter buku, `main.js` sebagai program utama dengan menu interaktif menggunakan `readline`, dan `package.json` sebagai konfigurasi Node.js agar mendukung penggunaan `import` dan `export`
+Proyek *backend* ini merupakan implementasi API untuk sistem manajemen perpustakaan yang mengelola data anggota, buku, dan transaksi peminjaman. Proyek ini dibangun menggunakan **Node.js** dan *framework* **Express.js**.
 
-# Format Data
-Struktur data utama disimpan dalam file `data.js` menggunakan **array of object** seperti berikut:
-```js
-[
-  { id: 1, judul: "Laskar Pelangi", penulis: "Andrea Hirata", tahun: 2005 },
-  { id: 2, judul: "Bumi", penulis: "Tere Liye", tahun: 2014 },
-  { id: 3, judul: "Negeri 5 Menara", penulis: "Ahmad Fuadi", tahun: 2009 }
-]
+### Arsitektur dan Data Storage
 
-# Penjelasan Masing-masing Function
-## tambahBuku()
-Fungsi ini digunakan untuk menambahkan data buku baru ke dalam daftar. Buku yang ditambahkan akan otomatis mendapatkan ID baru dan dimasukkan ke array data
+Untuk memenuhi persyaratan modularisasi proyek dan efisiensi, proyek ini menggunakan arsitektur **Local JavaScript Array** (`data.js`) sebagai *data storage* utama. Artinya, semua data (buku, anggota, peminjaman) disimpan dalam variabel *array* lokal. Logika bisnis inti diimplementasikan dalam *folder* `controllers/`, dengan *file* `peminjamanController.js` yang bertanggung jawab langsung memanipulasi stok di `data.js`. Untuk menjalankan server setelah instalasi *dependencies* (`npm install`), gunakan perintah **`npm start`**, dan server akan aktif di **`http://localhost:3000`**.
 
-## tampilkanSemuaBuku()
-Berfungsi untuk menampilkan seluruh data buku yang tersimpan dalam sistem secara berurutan agar pengguna dapat melihat daftar lengkap buku di perpustakaan
+### Fungsionalitas Endpoint API
 
-## cariBuku()
-Fungsi ini memungkinkan pengguna mencari buku berdasarkan kata kunci tertentu, baik dari judul maupun nama penulis. Hasil pencarian akan menampilkan semua buku yang sesuai
+Semua *endpoint* diakses melalui *Base URL*: `http://localhost:3000/api/v1`.
 
-## updateBuku()
-Digunakan untuk memperbarui informasi buku tertentu berdasarkan ID-nya. Pengguna dapat mengubah sebagian atau seluruh informasi dari buku tersebut
+**1. Manajemen Data Utama (CRUD):**
+Proyek ini menyediakan fungsionalitas CRUD lengkap untuk dua entitas utama: **Buku** (`/buku`) dan **Anggota** (`/anggota`). Setiap entitas mendukung **Method GET, POST, PUT /:id, dan DELETE /:id**. Endpoint `/buku` juga diperkuat dengan fitur *filtering* menggunakan **Query Parameter** (`?keyword=...`) untuk memudahkan pencarian.
 
-## hapusBuku()
-Berfungsi untuk menghapus data buku berdasarkan ID yang dimasukkan. Jika ID ditemukan, buku akan dihapus dari daftar; jika tidak, akan muncul pesan peringatan
-
-## hitungJumlahBuku()
-Fungsi tambahan ini menghitung dan menampilkan jumlah total buku yang saat ini tersimpan dalam sistem. Fungsi ini tidak mengubah data, hanya membaca isi array
-
-## filterBukuTahun()
-Fungsi tambahan yang menampilkan buku-buku yang diterbitkan dalam rentang tahun tertentu. Jika tidak ada buku yang sesuai, sistem akan memberikan notifikasi
+**2. Logika Bisnis Transaksi (`/peminjaman`):**
+Endpoint `/peminjaman` merupakan pusat logika bisnis:
+* **Peminjaman Baru (POST):** Saat transaksi baru dicatat, *controller* secara otomatis akan **mengurangi** nilai `stok_tersedia` buku yang dipinjam sebanyak satu, memastikan buku tidak dipinjam jika stok habis.
+* **Pengembalian (PUT /:id/return):** Saat buku dikembalikan, *controller* akan **menambah** nilai `stok_tersedia` buku tersebut sebanyak satu. Selain itu, sistem juga menghitung potensi **denda** jika tanggal pengembalian melewati batas `tanggal_tempo`.
