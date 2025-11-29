@@ -16,7 +16,7 @@ Proyek *backend* ini adalah implementasi API untuk mengelola data anggota, buku,
 
 ---
 
-## 🎯 Endpoint API (Base URL: http://localhost:3000/api/v1)
+## Endpoint API (Base URL: http://localhost:3000/api/v1)
 
 Berikut adalah daftar lengkap *endpoint* beserta **Method** (CRUD) dan fungsionalitasnya:
 
