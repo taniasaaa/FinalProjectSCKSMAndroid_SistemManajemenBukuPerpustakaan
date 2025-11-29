@@ -1,36 +1,47 @@
-# Judul Proyek
-Sistem Manajemen Buku Perpustakaan  
+# Final Project SC KSM Android_Sistem Manajemen Buku Perpustakaan 
 
-# Gambaran Umum File
-Proyek ini memiliki beberapa file utama, yaitu `data.js` untuk menyimpan data buku, `function.js` untuk menjalankan fungsi CRUD serta fitur tambahan seperti menghitung dan memfilter buku, `main.js` sebagai program utama dengan menu interaktif menggunakan `readline`, dan `package.json` sebagai konfigurasi Node.js agar mendukung penggunaan `import` dan `export`
+Proyek *backend* ini adalah implementasi API untuk mengelola data anggota, buku, dan transaksi peminjaman. Proyek dibangun menggunakan **Node.js** dan **Express.js** dengan arsitektur **Modular Array** (`data.js`).
 
-# Format Data
-Struktur data utama disimpan dalam file `data.js` menggunakan **array of object** seperti berikut:
-```js
-[
-  { id: 1, judul: "Laskar Pelangi", penulis: "Andrea Hirata", tahun: 2005 },
-  { id: 2, judul: "Bumi", penulis: "Tere Liye", tahun: 2014 },
-  { id: 3, judul: "Negeri 5 Menara", penulis: "Ahmad Fuadi", tahun: 2009 }
-]
+### Status dan Arsitektur Proyek
 
-# Penjelasan Masing-masing Function
-## tambahBuku()
-Fungsi ini digunakan untuk menambahkan data buku baru ke dalam daftar. Buku yang ditambahkan akan otomatis mendapatkan ID baru dan dimasukkan ke array data
+* **Arsitektur:** Node.js dan Express.js (Modular).
+* **Data Storage:** Menggunakan **Local JavaScript Array** (`data.js`) sebagai penyimpanan data utama (menggantikan database).
+* **Logika Bisnis Inti:** Semua *logic* stok peminjaman dan pengembalian diimplementasikan dalam **`peminjamanController.js`** dengan memanipulasi *array* di `data.js`.
 
-## tampilkanSemuaBuku()
-Berfungsi untuk menampilkan seluruh data buku yang tersimpan dalam sistem secara berurutan agar pengguna dapat melihat daftar lengkap buku di perpustakaan
+### 🛠️ Cara Menjalankan Server
 
-## cariBuku()
-Fungsi ini memungkinkan pengguna mencari buku berdasarkan kata kunci tertentu, baik dari judul maupun nama penulis. Hasil pencarian akan menampilkan semua buku yang sesuai
+1.  **Instalasi Dependencies:** `npm install`
+2.  **Menjalankan Server:** `npm start`
+    *(Server akan berjalan di: **http://localhost:3000**)*
 
-## updateBuku()
-Digunakan untuk memperbarui informasi buku tertentu berdasarkan ID-nya. Pengguna dapat mengubah sebagian atau seluruh informasi dari buku tersebut
+---
 
-## hapusBuku()
-Berfungsi untuk menghapus data buku berdasarkan ID yang dimasukkan. Jika ID ditemukan, buku akan dihapus dari daftar; jika tidak, akan muncul pesan peringatan
+## 🎯 Endpoint API (Base URL: http://localhost:3000/api/v1)
 
-## hitungJumlahBuku()
-Fungsi tambahan ini menghitung dan menampilkan jumlah total buku yang saat ini tersimpan dalam sistem. Fungsi ini tidak mengubah data, hanya membaca isi array
+Berikut adalah daftar lengkap *endpoint* beserta **Method** (CRUD) dan fungsionalitasnya:
 
-## filterBukuTahun()
-Fungsi tambahan yang menampilkan buku-buku yang diterbitkan dalam rentang tahun tertentu. Jika tidak ada buku yang sesuai, sistem akan memberikan notifikasi
+### 1. Data Buku (`/buku`)
+
+| Method | Endpoint | Fungsionalitas / Penjelasan Method |
+| :--- | :--- | :--- |
+| **GET** | `/buku` | **READ ALL:** Mengambil daftar semua buku. Mendukung **Query Parameter** `?keyword=` untuk mencari berdasarkan judul atau penulis. |
+| **POST** | `/buku` | **CREATE:** Menambah data buku baru ke dalam *array* `bukuData`. |
+| **PUT** | `/buku/:id` | **UPDATE:** Memperbarui satu atau lebih *field* data buku berdasarkan ID. |
+| **DELETE** | `/buku/:id` | **DELETE:** Menghapus data buku dari *array* berdasarkan ID. |
+
+### 2. Data Anggota (`/anggota`)
+
+| Method | Endpoint | Fungsionalitas / Penjelasan Method |
+| :--- | :--- | :--- |
+| **GET** | `/anggota` | **READ ALL:** Mengambil daftar semua anggota. |
+| **POST** | `/anggota` | **CREATE:** Menambah data anggota baru ke dalam *array* `anggotaData`. |
+| **PUT** | `/anggota/:id` | **UPDATE:** Memperbarui data anggota berdasarkan ID. |
+| **DELETE** | `/anggota/:id` | **DELETE:** Menghapus data anggota dari *array* berdasarkan ID. |
+
+### 3. Logika Transaksi Peminjaman (`/peminjaman`)
+
+| Method | Endpoint | Logika Bisnis Utama (CRUD Method) |
+| :--- | :--- | :--- |
+| **GET** | `/peminjaman` | **READ ALL:** Mengambil semua data transaksi peminjaman yang pernah terjadi. |
+| **POST** | `/peminjaman` | **CREATE Transaksi:** Mencatat peminjaman baru. **Logika:** **Mengurangi** `stok_tersedia` buku yang dipinjam sebanyak 1. |
+| **PUT** | `/peminjaman/:id/return` | **UPDATE Pengembalian:** Mencatat tanggal pengembalian buku. **Logika:** **Menambah** `stok_tersedia` buku yang dikembalikan sebanyak 1, dan menghitung denda jika terlambat. |
